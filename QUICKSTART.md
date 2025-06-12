@@ -37,7 +37,19 @@ make deploy-prod
 make deploy-staging
 ```
 
-### 5. M4 Macエンジン起動
+### 5. JRDBデータ取得（重要）
+```bash
+# JRDBから実データをダウンロード
+cd m4-mac-engine
+python working_jrdb_downloader.py
+
+# ダウンロード成功確認後、データを処理
+python extract_lzh_files.py
+python jrdb_consolidation_tool.py
+cd ..
+```
+
+### 6. M4 Macエンジン起動
 ```bash
 make start-engine
 ```

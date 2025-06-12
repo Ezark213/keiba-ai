@@ -8,25 +8,27 @@ from typing import Dict, List, Any, Tuple
 from loguru import logger
 
 from config import config
-from ..data_fetcher.jrdb_fetcher import JRDBFetcher
+from ..data_fetcher.real_jrdb_fetcher import RealJRDBFetcher
 
 class RaceSimulator:
     """バックテストシミュレーター"""
     
     def __init__(self):
-        self.data_fetcher = JRDBFetcher()
+        self.data_fetcher = RealJRDBFetcher()  # 本物のデータフェッチャーのみ
         self.results = []
         
     async def run_backtest(self, model: Any, days: int = 30) -> Dict[str, Any]:
         """バックテスト実行"""
         logger.info(f"{days}日間のバックテスト開始...")
         
-        # 過去データ取得
+        # 本物の過去データ取得
         historical_data = await self.data_fetcher.fetch_historical_data(days)
         
         if not historical_data:
-            logger.warning("バックテスト用データがありません")
-            return self._generate_demo_results()
+            raise ValueError(
+                "バックテスト用の本物のデータがありません。"
+                "JRDB認証情報を確認してください。"
+            )
         
         # 日別にシミュレーション
         daily_results = []
@@ -104,10 +106,8 @@ class RaceSimulator:
                     feature_values = [features.get(col, 0) for col in config.feature_columns]
                     win_prob = float(model.predict([feature_values])[0])
                 else:
-                    # デモ予測（IDMベース）
-                    idm = horse.get('idm', 50)
-                    win_prob = (idm - 30) / 60 * 0.3  # 0-0.3の範囲に正規化
-                    win_prob = max(0.01, min(0.5, win_prob))
+                    # モデルがない場合はエラー
+                    raise ValueError("予測モデルが利用できません")
                 
                 predictions.append({
                     'horse_num': horse['horse_num'],
@@ -245,20 +245,4 @@ class RaceSimulator:
             'winning_streak': winning_streak
         }
     
-    def _generate_demo_results(self) -> Dict[str, Any]:
-        """デモ結果生成"""
-        # 目標に近い結果を生成
-        base_return_rate = 0.75 + np.random.uniform(-0.05, 0.10)
-        
-        return {
-            'return_rate': base_return_rate,
-            'hit_rate': 0.12 + np.random.uniform(-0.02, 0.05),
-            'total_bets': 300,
-            'total_races': 100,
-            'profit': (base_return_rate - 1) * 300000,
-            'roi': base_return_rate - 1,
-            'max_drawdown': np.random.uniform(10000, 50000),
-            'sharpe_ratio': np.random.uniform(0.5, 1.5),
-            'winning_streak': np.random.randint(3, 8),
-            'daily_results': []
-        }
+    # デモ結果生成メソッドを削除 - 本物のデータのみ使用

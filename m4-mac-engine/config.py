@@ -28,6 +28,9 @@ class SystemConfig:
     use_live_claude: bool = True  # Claude Code環境での実行
     claude_api_key: str = ""  # API不使用
     
+    # JRDBデータ形式
+    jrdb_data_format: str = "lzh"  # lha圧縮形式
+    
     # JRDB設定（セキュア取得を優先）
     jrdb_username: Optional[str] = None
     jrdb_password: Optional[str] = None
@@ -52,10 +55,16 @@ class SystemConfig:
         
         if not self.cloudflare_sync_token:
             self.cloudflare_sync_token = os.getenv("CF_SYNC_TOKEN", "")
-    jrdb_ftp_host: str = "ftp.jrdb.jp"
+        
+        # ディレクトリ作成
+        for dir_path in [self.data_dir, self.model_dir, self.cache_dir, 
+                        self.race_data_dir, self.log_dir]:
+            dir_path.mkdir(parents=True, exist_ok=True)
+    # JRDBの正しいドメインは.com
+    jrdb_ftp_host: str = "ftp.jrdb.com"
     
     # 実行設定
-    cycle_interval_minutes: int = 30
+    cycle_interval_minutes: int = 1  # 高速サイクルで80%達成を目指す
     target_return_rate: float = 0.80
     max_concurrent_tasks: int = 10
     
@@ -97,17 +106,18 @@ class SystemConfig:
     max_bet_fraction: float = 0.05  # 最大5%
     min_expected_value: float = 1.2  # 最小期待値
     
-    def __post_init__(self):
-        """ディレクトリ作成"""
-        for dir_path in [self.data_dir, self.model_dir, self.cache_dir, 
-                        self.race_data_dir, self.log_dir]:
-            dir_path.mkdir(parents=True, exist_ok=True)
-    
     def validate(self) -> bool:
-        """設定の検証"""
-        if not self.use_live_claude and not self.cloudflare_sync_token:
+        """設定の検証 - 本物のデータのみ使用"""
+        if not self.cloudflare_sync_token:
             print("⚠️  CF_SYNC_TOKEN が設定されていません")
             return False
+        
+        # JRDB認証情報を必須に
+        if not self.jrdb_username or not self.jrdb_password:
+            print("⚠️  JRDB認証情報が設定されていません")
+            print("本物のデータを使用するため、JRDB_USERNAMEとJRDB_PASSWORDが必須です")
+            return False
+        
         return True
 
 # グローバル設定インスタンス

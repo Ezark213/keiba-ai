@@ -87,16 +87,18 @@ def main():
     環境変数ステータス:
     - CLAUDE_API_KEY: {'✓' if config.claude_api_key else '✗'}
     - CF_SYNC_TOKEN: {'✓' if config.cloudflare_sync_token else '✗'}
-    - JRDB認証: {'✓' if config.jrdb_username else '✗ (デモモード)'}
+    - JRDB認証: {'✓' if config.jrdb_username else '✗ (必須)'}
     """)
     
-    if not all([config.claude_api_key, config.cloudflare_sync_token]):
+    # JRDB認証情報を必須に
+    if not all([config.claude_api_key, config.cloudflare_sync_token, config.jrdb_username, config.jrdb_password]):
         print("\n⚠️  必要な環境変数が設定されていません。")
-        print("以下の環境変数を設定してください:")
+        print("本物のデータを使用するため、以下の全ての環境変数が必須です:")
         print("  export CLAUDE_API_KEY='your-api-key'")
         print("  export CF_SYNC_TOKEN='your-sync-token'")
-        print("  export JRDB_USERNAME='your-username' (オプション)")
-        print("  export JRDB_PASSWORD='your-password' (オプション)")
+        print("  export JRDB_USERNAME='your-username' (必須)")
+        print("  export JRDB_PASSWORD='your-password' (必須)")
+        print("\n※ デモモードは廃止されました。常に本物のデータを使用します。")
         return
     
     print("\n開始するにはEnterキーを押してください (終了: Ctrl+C)")

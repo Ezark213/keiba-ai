@@ -217,4 +217,45 @@ When working with this system, focus on the `m4-mac-engine/` directory where you
 ### 開発プロセス
 1. **機能実装** → 2. **SOLID原則チェック** → 3. **セキュリティ監査** → 4. **ドキュメント更新** → 5. **GitHub コミット** → 6. **本番デプロイ**
 
+## 🚨 重要: データ使用ポリシー
+
+**サンプルデータは絶対禁止**
+- デモデータやサンプルデータは一切使用しない
+- 必ず本物のJRDBデータを取得・使用する
+- どんな方法を使ってでも実データをダウンロードする
+- ブラウザ自動化（Selenium）でも手動でも、確実に実データを取得する
+
+### データ取得要件
+1. JRDBから最新の実データを必ずダウンロード
+2. サンプルデータでの動作は一切許可しない
+3. システムは実データのみで稼働させる
+4. データがない場合はダウンロードを実行してから稼働
+
+### 確実なJRDBデータダウンロード方法
+**working_jrdb_downloader.py を使用する方法が最も確実です：**
+
+```bash
+# JRDBデータダウンロード
+python working_jrdb_downloader.py
+
+# LZHファイル展開
+python extract_lzh_files.py
+
+# データ統合
+python jrdb_consolidation_tool.py
+```
+
+**動作原理：**
+1. Seleniumでhttp://www.jrdb.com/member/data/にアクセス
+2. HTTPベーシック認証（ユーザー名: 25067698、パスワード: 87086387）
+3. 画面に表示される「Lzh」リンクをクリックしてダウンロード
+4. 15個のファイルを自動取得
+
+**取得されるファイル例：**
+- BAC250614.lzh (番組データ)
+- KAB250614.lzh (開催データ)
+- KTA250615.lzh (登録馬データ)
+- SKB250607.lzh (成績拡張データ)
+等
+
 **Ultrathink. Don't hold back. give it your all！**

@@ -8,7 +8,7 @@ from loguru import logger
 import json
 
 from config import config
-from .data_fetcher.jrdb_fetcher import JRDBFetcher
+from .data_fetcher.jrdb_simple_fetcher import JRDBSimpleFetcher
 from .ml_engine.trainer import MLTrainer
 from .ml_engine.simulator import RaceSimulator
 from .claude_integration.claude_client import ClaudeClient
@@ -22,8 +22,8 @@ class AutoImprovementLoop:
         self.best_return_rate = 0.0
         self.current_model_version = None
         
-        # コンポーネント初期化
-        self.data_fetcher = JRDBFetcher()
+        # コンポーネント初期化 - 本物のデータフェッチャーのみ使用
+        self.data_fetcher = JRDBSimpleFetcher()
         self.ml_trainer = MLTrainer()
         self.simulator = RaceSimulator()
         self.claude_client = ClaudeClient()
@@ -76,18 +76,10 @@ class AutoImprovementLoop:
             logger.error(f"サイクルエラー: {e}", exc_info=True)
             
     async def _fetch_latest_data(self) -> Dict[str, Any]:
-        """最新データ取得"""
-        try:
-            # JRDBからデータ取得（デモモードの場合は生成）
-            if config.jrdb_username:
-                return await self.data_fetcher.fetch_latest()
-            else:
-                logger.warning("JRDBクレデンシャル未設定 - デモデータを使用")
-                return await self.data_fetcher.generate_demo_data()
-        except Exception as e:
-            logger.error(f"データ取得エラー: {e}")
-            # エラー時はデモデータで継続
-            return await self.data_fetcher.generate_demo_data()
+        """最新データ取得 - 本物のJRDBデータのみ"""
+        # 本物のデータ取得のみ - デモモード完全排除
+        races = await self.data_fetcher.fetch_latest_races()
+        return {'races': races}
     
     async def _prepare_training_data(self, raw_data: Dict[str, Any]) -> Any:
         """学習データ準備"""

@@ -107,4 +107,4 @@ coverage/
 
 # 設定の機密情報
 wrangler.toml.local
-*-secrets.toml
+*-secrets.tomlm4-mac-engine/jrdb_lib/

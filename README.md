@@ -51,7 +51,19 @@ make deploy-staging
 make deploy
 ```
 
-### 4. Claude主導エンジン起動（推奨）
+### 4. JRDBデータ取得
+```bash
+# 確実な方法でJRDBデータをダウンロード
+python m4-mac-engine/working_jrdb_downloader.py
+
+# LZHファイル展開
+python m4-mac-engine/extract_lzh_files.py
+
+# データ統合
+python m4-mac-engine/jrdb_consolidation_tool.py
+```
+
+### 5. Claude主導エンジン起動（推奨）
 ```bash
 make start-claude
 ```

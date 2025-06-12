@@ -158,9 +158,10 @@ class MLTrainer:
         train_df = train_data[train_data['is_winner'].notna()].copy()
         
         if len(train_df) < 100:
-            logger.warning(f"学習データが少なすぎます: {len(train_df)}サンプル")
-            # デモ用の疑似学習
-            return self._create_demo_model(), {'auc': 0.75, 'accuracy': 0.85}
+            raise ValueError(
+                f"学習データが少なすぎます: {len(train_df)}サンプル\n"
+                "本物のJRDBデータが必要です。JRDB認証情報を確認してください。"
+            )
         
         # 特徴量とターゲット
         feature_cols = [col for col in train_df.columns 
@@ -218,18 +219,7 @@ class MLTrainer:
         
         return self.model, metrics
     
-    def _create_demo_model(self) -> Any:
-        """デモ用モデル作成"""
-        # 簡単な決定木モデルを作成
-        from sklearn.tree import DecisionTreeClassifier
-        demo_model = DecisionTreeClassifier(max_depth=3, random_state=42)
-        
-        # ダミーデータで学習
-        X_dummy = np.random.rand(100, len(config.feature_columns))
-        y_dummy = np.random.randint(0, 2, 100)
-        demo_model.fit(X_dummy, y_dummy)
-        
-        return demo_model
+    # デモモデル作成メソッドを削除 - 本物のデータのみ使用
     
     def predict(self, features: pd.DataFrame) -> np.ndarray:
         """予測実行"""
