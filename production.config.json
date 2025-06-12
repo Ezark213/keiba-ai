@@ -1,0 +1,43 @@
+{
+  "production": {
+    "domains": {
+      "api": {
+        "primary": "api.keiba-prediction.com",
+        "fallback": "keiba-prediction-api.workers.dev"
+      },
+      "frontend": {
+        "primary": "keiba-prediction.com", 
+        "fallback": "keiba-prediction.pages.dev"
+      }
+    },
+    "cloudflare": {
+      "workers": {
+        "name": "keiba-prediction-api",
+        "route": "api.keiba-prediction.com/*",
+        "environment": "production"
+      },
+      "pages": {
+        "project_name": "keiba-prediction",
+        "custom_domain": "keiba-prediction.com",
+        "environment": "production"
+      }
+    },
+    "deployment": {
+      "strategy": "blue_green",
+      "health_check_url": "/api/health",
+      "rollback_threshold": 0.95
+    }
+  },
+  "staging": {
+    "domains": {
+      "api": {
+        "primary": "staging-api.keiba-prediction.com",
+        "fallback": "keiba-prediction-api-staging.workers.dev"
+      },
+      "frontend": {
+        "primary": "staging.keiba-prediction.com",
+        "fallback": "keiba-prediction-staging.pages.dev"
+      }
+    }
+  }
+}

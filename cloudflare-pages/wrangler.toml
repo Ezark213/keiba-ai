@@ -1,0 +1,35 @@
+name = "keiba-prediction"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "keiba-prediction"
+
+[env.staging]
+name = "keiba-prediction-staging"
+
+# Pages設定
+[build]
+command = "npm run build"
+cwd = "./"
+publish = "dist"
+
+# 環境変数
+[vars]
+NODE_ENV = "production"
+
+# 本番環境変数
+[env.production.vars]
+VITE_API_URL = "https://api.keiba-prediction.com"
+VITE_ENVIRONMENT = "production"
+VITE_APP_NAME = "競馬予測システム"
+
+# ステージング環境変数
+[env.staging.vars]
+VITE_API_URL = "https://staging-api.keiba-prediction.com"
+VITE_ENVIRONMENT = "staging"
+VITE_APP_NAME = "競馬予測システム (Staging)"
+
+# Functions設定（Pages Functions）
+[[pages.functions]]
+pattern = "/api/*"
+compatibility_date = "2024-01-01"

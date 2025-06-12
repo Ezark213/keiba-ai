@@ -1,0 +1,58 @@
+name = "keiba-prediction-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# 本番環境設定
+[env.production]
+name = "keiba-prediction-api"
+routes = [
+  { pattern = "api.keiba-prediction.com/*", zone_name = "keiba-prediction.com" }
+]
+
+# ステージング環境設定  
+[env.staging]
+name = "keiba-prediction-api-staging"
+routes = [
+  { pattern = "staging-api.keiba-prediction.com/*", zone_name = "keiba-prediction.com" }
+]
+
+# 無料枠対応: Durable Objectsは使用しない
+
+# KVネームスペース設定
+[[kv_namespaces]]
+binding = "MODELS"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+
+[[kv_namespaces]]
+binding = "PREDICTIONS"
+id = "your-predictions-kv-id"
+preview_id = "your-preview-predictions-kv-id"
+
+# R2バケット設定
+[[r2_buckets]]
+binding = "MODEL_STORAGE"
+bucket_name = "keiba-models"
+
+# 環境変数
+[vars]
+CLAUDE_API_KEY = ""
+SYNC_TOKEN = "your-sync-token"
+
+# 本番環境変数
+[env.production.vars]
+ENVIRONMENT = "production"
+API_URL = "https://api.keiba-prediction.com"
+FRONTEND_URL = "https://keiba-prediction.com"
+
+# ステージング環境変数
+[env.staging.vars]
+ENVIRONMENT = "staging"
+API_URL = "https://staging-api.keiba-prediction.com" 
+FRONTEND_URL = "https://staging.keiba-prediction.com"
+
+# ビルド設定
+[build]
+command = "npm install"
+cwd = "./"
+watch_paths = ["src/**/*.js"]
