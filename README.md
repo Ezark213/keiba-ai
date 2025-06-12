@@ -7,7 +7,7 @@
 - **フロントエンド**: Cloudflare Pages (React SPA)
 - **バックエンド**: Cloudflare Workers (エッジAPI)
 - **ML処理**: M4 Mac (ローカル学習環境)
-- **AI支援**: Claude API (理論構築・改善)
+- **AI支援**: Claude Code直接実行 (理論構築・改善)
 
 ## ディレクトリ構造
 ```
@@ -22,7 +22,6 @@ keiba-prediction-v3/
 
 ### 1. 環境変数設定
 ```bash
-export CLAUDE_API_KEY="your-claude-api-key"
 export CF_SYNC_TOKEN="your-sync-token"
 export JRDB_USERNAME="your-jrdb-username"
 export JRDB_PASSWORD="your-jrdb-password"
@@ -42,11 +41,14 @@ cd ../m4-mac-engine && python3 -m venv venv && source venv/bin/activate && pip i
 
 ### 3. デプロイ
 ```bash
-# Workers
-cd cloudflare-workers && wrangler publish
+# 本番環境（推奨）
+make deploy-prod
 
-# Pages
-cd ../cloudflare-pages && npm run build && wrangler pages publish dist
+# ステージング環境
+make deploy-staging
+
+# 開発環境
+make deploy
 ```
 
 ### 4. Claude主導エンジン起動（推奨）
