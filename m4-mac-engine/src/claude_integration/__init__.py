@@ -1,0 +1,1 @@
+# Claude Integration Package

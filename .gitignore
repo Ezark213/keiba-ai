@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ログファイル
 logs/
 *.log
@@ -18,3 +19,115 @@ Thumbs.db
 *~
 .vscode/
 .idea/ 
+=======
+# セキュリティ - 機密情報ファイル
+.env
+*.env
+.env.local
+.env.production
+
+# API キー・トークン
+*api_key*
+*token*
+*secret*
+*password*
+credentials.json
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 仮想環境
+venv/
+ENV/
+env/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ログファイル
+logs/
+*.log
+
+# 一時ファイル
+tmp/
+temp/
+.tmp/
+
+# データファイル（機密性考慮）
+data/races/*.json
+data/models/*.lgb
+data/cache/*
+claude_state.json
+current_session.json
+analysis_history.json
+
+# バックアップファイル
+*.bak
+*.backup
+
+# Cloudflare
+.wrangler/
+worker-configuration.d.ts
+
+# ビルド出力
+dist/
+build/
+
+# パフォーマンス・プロファイリング
+.nyc_output
+coverage/
+*.lcov
+
+# キーチェーン・キーストア
+*.keychain
+*.keystore
+*.p12
+*.pfx
+
+# 設定の機密情報
+wrangler.toml.local
+*-secrets.tomlm4-mac-engine/jrdb_lib/
+>>>>>>> d03e9090790fb917d311565be59f38529f733b9a
