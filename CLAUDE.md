@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-# Agent Communication System
-
-## エージェント構成
-- **PRESIDENT** (別セッション): 統括責任者
-- **boss1** (multiagent:0.0): チームリーダー
-- **worker1,2,3** (multiagent:0.1-3): 実行担当
-
-## あなたの役割
-- **PRESIDENT**: @instructions/president.md
-- **boss1**: @instructions/boss.md
-- **worker1,2,3**: @instructions/worker.md
-
-## メッセージ送信
-```bash
-./agent-send.sh [相手] "[メッセージ]"
-```
-
-## 基本フロー
-PRESIDENT → boss1 → workers → boss1 → PRESIDENT 
-=======
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -143,7 +122,7 @@ The system shows current simulation results:
 ## Target Architecture Understanding
 
 ### ML Pipeline
-1. **Data Fetching** - JRDB horse racing data (or demo data)
+1. **Data Fetching** - JRDB horse racing data
 2. **Feature Engineering** - You dynamically add features
 3. **LightGBM Training** - Model training with your parameters
 4. **Simulation/Backtesting** - Performance evaluation  
@@ -157,14 +136,14 @@ The system shows current simulation results:
 
 ## Configuration Management
 
-### Environment Variables (No Claude API needed)
+### Environment Variables
 ```bash
 # Required
 CF_SYNC_TOKEN="your-cloudflare-token"
 
-# JRDB Data (securely stored)
-JRDB_USERNAME="25067698" 
-JRDB_PASSWORD="87086387"
+# JRDB Data (securely stored in keychain)
+JRDB_USERNAME="your-username" 
+JRDB_PASSWORD="your-password"
 
 # Optional
 TARGET_RETURN_RATE="0.80"
@@ -206,29 +185,24 @@ tail -f m4-mac-engine/logs/claude_engine_*.log
 
 When working with this system, focus on the `m4-mac-engine/` directory where you have direct control over the ML pipeline and can implement improvements by modifying configuration files, feature lists, and model parameters.
 
-## 🚀 開発・デプロイメントガイドライン
+## 開発・デプロイメントガイドライン
 
 ### GitHub管理
-- **作業が完了したらgithubに追加すること**
+- 作業が完了したらGitHubに追加すること
 - システムの改善や機能追加後は必ずGitHubにコミット・プッシュを実行
 
 ### セキュリティ要件
-- **githubへのプッシュ前にセキュリティ上の問題がないか確認すること**
+- GitHubへのプッシュ前にセキュリティ上の問題がないか確認すること
 - 機密情報（API キー、パスワード、トークン）が含まれていないことを検証
 - `.gitignore`の設定が適切であることを確認
 
 ### ドキュメント保守
-- **実装を変更したらそれに合わせてドキュメントも更新すること**
+- 実装を変更したらそれに合わせてドキュメントも更新すること
 - README.md、QUICKSTART.md、CLAUDE_INTEGRATION.mdの整合性を保つ
 - 新機能や変更された仕様を適切に文書化
 
-### 本番環境デプロイ
-- **必ずURLが固定の本番環境にデプロイするようにして**
-- Cloudflare Pages: 固定カスタムドメイン設定
-- Cloudflare Workers: production環境での安定したエンドポイント提供
-
 ### コード品質管理
-- **実装がSOLID原則に従っているか確認して**
+- 実装がSOLID原則に従っているか確認して
 - Single Responsibility: 各クラス・関数は単一の責任を持つ
 - Open/Closed: 拡張に開かれ、変更に閉じられた設計
 - Liskov Substitution: 基底クラスは派生クラスで置換可能
@@ -236,48 +210,24 @@ When working with this system, focus on the `m4-mac-engine/` directory where you
 - Dependency Inversion: 具象ではなく抽象に依存する
 
 ### 開発プロセス
-1. **機能実装** → 2. **SOLID原則チェック** → 3. **セキュリティ監査** → 4. **ドキュメント更新** → 5. **GitHub コミット** → 6. **本番デプロイ**
+1. 機能実装 → 2. SOLID原則チェック → 3. セキュリティ監査 → 4. ドキュメント更新 → 5. GitHub コミット → 6. 本番デプロイ
 
-## 🚨 重要: データ使用ポリシー
+## データ使用ポリシー
 
-**サンプルデータは絶対禁止**
-- デモデータやサンプルデータは一切使用しない
-- 必ず本物のJRDBデータを取得・使用する
-- どんな方法を使ってでも実データをダウンロードする
-- ブラウザ自動化（Selenium）でも手動でも、確実に実データを取得する
-
-### データ取得要件
-1. JRDBから最新の実データを必ずダウンロード
-2. サンプルデータでの動作は一切許可しない
-3. システムは実データのみで稼働させる
-4. データがない場合はダウンロードを実行してから稼働
-
-### 確実なJRDBデータダウンロード方法
-**working_jrdb_downloader.py を使用する方法が最も確実です：**
-
+### JRDBデータ取得方法
 ```bash
 # JRDBデータダウンロード
-python working_jrdb_downloader.py
+python m4-mac-engine/working_jrdb_downloader.py
 
 # LZHファイル展開
-python extract_lzh_files.py
+python m4-mac-engine/extract_lzh_files.py
 
 # データ統合
-python jrdb_consolidation_tool.py
+python m4-mac-engine/jrdb_consolidation_tool.py
 ```
 
-**動作原理：**
-1. Seleniumでhttp://www.jrdb.com/member/data/にアクセス
-2. HTTPベーシック認証（ユーザー名: 25067698、パスワード: 87086387）
-3. 画面に表示される「Lzh」リンクをクリックしてダウンロード
-4. 15個のファイルを自動取得
-
-**取得されるファイル例：**
-- BAC250614.lzh (番組データ)
-- KAB250614.lzh (開催データ)
-- KTA250615.lzh (登録馬データ)
-- SKB250607.lzh (成績拡張データ)
-等
-
-**Ultrathink. Don't hold back. give it your all！**
->>>>>>> d03e9090790fb917d311565be59f38529f733b9a
+### 取得されるファイル例
+- BAC*.lzh (番組データ)
+- KAB*.lzh (開催データ)
+- KTA*.lzh (登録馬データ)
+- SKB*.lzh (成績拡張データ)
